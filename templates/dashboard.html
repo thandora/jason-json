@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='db.css') }}" />
+    <title>EVSU GIS PORTAL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            class="logo"
+          />
+        </div>
+        <ul class="sidebar-menu">
+          <li class="active"><i class="icon icon-dashboard"></i> Dashboard</li>
+          <li
+            onclick="window.location.href='{{ url_for('extension_program_management') }}'"
+          >
+            <i class="icon icon-extension-management"></i> Extension Program
+            Management
+          </li>
+          <li onclick="window.location.href='{{ url_for('main_campus') }}'">
+            <i class="icon icon-extension-programs"></i> Extension Programs
+          </li>
+          <li onclick="window.location.href='{{ url_for('map') }}'">
+            <i class="icon icon-location-map"></i> Location Map
+          </li>
+        </ul>
+        <div class="logout-container">
+          <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="header">
+          <h1>EVSU Extension Services Program Dashboard</h1>
+        </div>
+
+        <!-- Moved the image carousel to the top -->
+        <div class="image-carousel">
+          <div class="carousel-slides">
+            <img
+              src="{{ url_for('static', filename='images/image1.jpg') }}"
+              alt="Image 1"
+              class="carousel-slide"
+            />
+            <img
+              src="{{ url_for('static', filename='images/image2.jpg') }}"
+              alt="Image 2"
+              class="carousel-slide"
+            />
+            <img
+              src="{{ url_for('static', filename='images/image3.jpg') }}"
+              alt="Image 3"
+              class="carousel-slide"
+            />
+          </div>
+
+          <div class="carousel-controls">
+            <button class="carousel-btn prev-btn">&lt;</button>
+            <button class="carousel-btn next-btn">&gt;</button>
+          </div>
+
+          <div class="carousel-indicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+          </div>
+        </div>
+
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-value">{{ total_projects }}</div>
+            <div class="stat-label">Total Programs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ completed_count }}</div>
+            <div class="stat-label">Completed Programs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ in_progress_count }}</div>
+            <div class="stat-label">In Progress Programs</div>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="card">
+            <canvas id="pieChart"></canvas>
+          </div>
+          <div class="card">
+            <canvas id="lineChart"></canvas>
+          </div>
+          <div class="card">
+            <canvas id="doughnutChart"></canvas>
+          </div>
+        </div>
+
+        <div class="sdg-icons-container">
+          {% for sdg_number in range(1, 18) %}
+          <div class="sdg-container">
+            <img
+              src="{{ url_for('static', filename='images/E_SDG_PRINT-' + sdg_number|string + '.jpg') }}"
+              alt="SDG {{ sdg_number }}"
+              class="sdg-icon"
+            />
+            <div class="sdg-overlay">
+              <div class="sdg-stats">
+                <div class="stat-item">
+                  <span class="stat-value">
+                    {% if sdg_stats[sdg_number] %} {{
+                    sdg_stats[sdg_number].in_progress }} {% else %} 0 {% endif
+                    %}
+                  </span>
+                  <span>On-going</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">
+                    {% if sdg_stats[sdg_number] %} {{
+                    sdg_stats[sdg_number].completed }} {% else %} 0 {% endif %}
+                  </span>
+                  <span>Completed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="history-section">
+          <!-- Header Section -->
+          <div class="history-header">
+            <h2 class="section-title">History and Background</h2>
+            <div class="title-underline"></div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="history-content">
+            <!-- Introduction Card -->
+            <div class="history-card">
+              <div class="history-text">
+                <h3 class="history-subtitle">Our Journey</h3>
+                <p>
+                  The Extension Service Program of Eastern Visayas State
+                  University (EVSU) traces its roots back to the institution's
+                  founding commitment to community service. Since its inception,
+                  EVSU has been dedicated to extending its academic expertise
+                  beyond campus boundaries to create meaningful impact in
+                  Eastern Visayas communities.
+                </p>
+
+                <p>
+                  What began as informal community outreach initiatives in the
+                  early years has evolved into a sophisticated, multi-faceted
+                  extension program that addresses critical societal needs while
+                  aligning with national development goals and international
+                  standards for community engagement.
+                </p>
+              </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div class="timeline-section">
+              <h3 class="timeline-title">Evolution Through the Years</h3>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-content">
+                    <h4>Foundation Years</h4>
+                    <p>
+                      Initial community outreach programs focused on basic
+                      education and skills training for local communities.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-content">
+                    <h4>Program Expansion</h4>
+                    <p>
+                      Development of structured extension programs aligned with
+                      academic strengths and community needs.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-content">
+                    <h4>Modern Era</h4>
+                    <p>
+                      Integration of UN SDGs and implementation of
+                      technology-driven community development initiatives.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Key Achievements -->
+            <div class="achievements-section">
+              <h3 class="achievements-title">Notable Achievements</h3>
+              <div class="milestone-grid">
+                <div class="milestone-card">
+                  <div class="milestone-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="16" />
+                      <line x1="8" y1="12" x2="16" y2="12" />
+                    </svg>
+                  </div>
+                  <h4>SDG Integration</h4>
+                  <p>
+                    Successfully aligned extension programs with UN's
+                    Sustainable Development Goals
+                  </p>
+                </div>
+
+                <div class="milestone-card">
+                  <div class="milestone-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon"
+                    >
+                      <path
+                        d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+                      />
+                    </svg>
+                  </div>
+                  <h4>Community Partnerships</h4>
+                  <p>
+                    Established strong partnerships with Local Government Units
+                    and Organizations
+                  </p>
+                </div>
+
+                <div class="milestone-card">
+                  <div class="milestone-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon"
+                    >
+                      <path
+                        d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+                      />
+                    </svg>
+                  </div>
+                  <h4>Training Excellence</h4>
+                  <p>
+                    Developed comprehensive training programs addressing
+                    community needs
+                  </p>
+                </div>
+
+                <div class="milestone-card">
+                  <div class="milestone-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon"
+                    >
+                      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                      <path d="M4 22h16" />
+                      <path
+                        d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"
+                      />
+                      <path
+                        d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"
+                      />
+                      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                    </svg>
+                  </div>
+                  <h4>Recognition</h4>
+                  <p>
+                    Received national awards for outstanding community service
+                    initiatives
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Impact Statistics -->
+            <div class="impact-section">
+              <h3 class="impact-title">Our Impact</h3>
+              <div class="impact-grid">
+                <div class="impact-card">
+                  <span class="impact-number">50+</span>
+                  <p>Communities Served</p>
+                </div>
+                <div class="impact-card">
+                  <span class="impact-number">10K+</span>
+                  <p>Beneficiaries</p>
+                </div>
+                <div class="impact-card">
+                  <span class="impact-number">100+</span>
+                  <p>Programs Completed</p>
+                </div>
+                <div class="impact-card">
+                  <span class="impact-number">30+</span>
+                  <p>Partner Organizations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+                  // Pie Chart with original colors
+                  const pieCtx = document.getElementById("pieChart").getContext("2d");
+
+              // Replace these variables with actual values from the backend
+              const completedCount = {{ completed_count }};  // Dynamic value passed from Flask
+              const inProgressCount = {{ in_progress_count }};  // Dynamic value passed from Flask
+
+              new Chart(pieCtx, {
+                type: "pie",
+                data: {
+                  labels: ["Completed", "In Progress"],
+                  datasets: [
+                    {
+                      data: [completedCount, inProgressCount],
+                      backgroundColor: ["#2ecc71", "#3498db"],  // Green for completed, blue for in progress
+                    },
+                  ],
+                },
+              });
+
+                  // Line Chart
+                  const lineCtx = document.getElementById("lineChart").getContext("2d");
+
+      new Chart(lineCtx, {
+        type: "line",
+        data: {
+          labels: {{ years|tojson }},  // This will be the list of years from the backend
+          datasets: [
+            {
+              label: "Yearly Extension Programs",
+              data: {{ program_counts|tojson }},  // This will be the list of program counts
+              borderColor: "#3498db",
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+                  // Doughnut Chart with original colors
+                  const doughnutCtx = document.getElementById("doughnutChart").getContext("2d");
+            new Chart(doughnutCtx, {
+                type: "doughnut",
+                data: {
+                    labels: {{ collegecampus_labels | tojson }},
+                    datasets: [{
+                        data: {{ collegecampus_data | tojson }},
+                        backgroundColor: ["#1abc9c", "#3498db", "#9b59b6", "#e67e22", "#f39c12", "#d35400", "#16a085"]
+                    }]
+                }
+            });
+                  document.addEventListener("DOMContentLoaded", function () {
+                    const carousel = document.querySelector(".carousel-slides");
+                    const slides = document.querySelectorAll(".carousel-slide");
+                    const prevBtn = document.querySelector(".prev-btn");
+                    const nextBtn = document.querySelector(".next-btn");
+                    const indicators = document.querySelectorAll(".indicator");
+                    let currentSlide = 0;
+
+                    function showSlide(index) {
+                      // Reset all indicators
+                      indicators.forEach((ind) => ind.classList.remove("active"));
+
+                      // Set new active indicator
+                      indicators[index].classList.add("active");
+
+                      // Move carousel
+                      carousel.style.transform = `translateX(-${index * 100}%)`;
+                      currentSlide = index;
+                    }
+
+                    // Next button
+                    nextBtn.addEventListener("click", () => {
+                      currentSlide = (currentSlide + 1) % slides.length;
+                      showSlide(currentSlide);
+                    });
+
+                    // Previous button
+                    prevBtn.addEventListener("click", () => {
+                      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                      showSlide(currentSlide);
+                    });
+
+                    // Indicator clicks
+                    indicators.forEach((indicator) => {
+                      indicator.addEventListener("click", function () {
+                        const slideIndex = parseInt(this.getAttribute("data-slide"));
+                        showSlide(slideIndex);
+                      });
+                    });
+
+                    // Optional: Auto-advance
+                    setInterval(() => {
+                      currentSlide = (currentSlide + 1) % slides.length;
+                      showSlide(currentSlide);
+                    }, 5000);
+                  });
+    </script>
+  </body>
+</html>

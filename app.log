@@ -1,0 +1,26 @@
+2024-11-25 11:30:38,907 - sqlalchemy.engine.Engine - INFO - SELECT CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR)
+2024-11-25 11:30:38,907 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2024-11-25 11:30:38,930 - sqlalchemy.engine.Engine - INFO - SELECT schema_name()
+2024-11-25 11:30:38,931 - sqlalchemy.engine.Engine - INFO - [generated in 0.00179s] ()
+2024-11-25 11:30:38,976 - sqlalchemy.engine.Engine - INFO - SELECT CAST('test max support' AS NVARCHAR(max))
+2024-11-25 11:30:38,977 - sqlalchemy.engine.Engine - INFO - [generated in 0.00255s] ()
+2024-11-25 11:30:39,019 - sqlalchemy.engine.Engine - INFO - SELECT 1 FROM fn_listextendedproperty(default, default, default, default, default, default, default)
+2024-11-25 11:30:39,020 - sqlalchemy.engine.Engine - INFO - [generated in 0.00322s] ()
+2024-11-25 11:30:39,090 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2024-11-25 11:30:39,095 - sqlalchemy.engine.Engine - INFO - SELECT [INFORMATION_SCHEMA].[TABLES].[TABLE_NAME] 
+FROM [INFORMATION_SCHEMA].[TABLES] 
+WHERE ([INFORMATION_SCHEMA].[TABLES].[TABLE_TYPE] = CAST(? AS NVARCHAR(max)) OR [INFORMATION_SCHEMA].[TABLES].[TABLE_TYPE] = CAST(? AS NVARCHAR(max))) AND [INFORMATION_SCHEMA].[TABLES].[TABLE_NAME] = CAST(? AS NVARCHAR(max)) AND [INFORMATION_SCHEMA].[TABLES].[TABLE_SCHEMA] = CAST(? AS NVARCHAR(max))
+2024-11-25 11:30:39,095 - sqlalchemy.engine.Engine - INFO - [generated in 0.00234s] ('BASE TABLE', 'VIEW', 'Users', 'dbo')
+2024-11-25 11:30:39,124 - sqlalchemy.engine.Engine - INFO - COMMIT
+2024-11-25 11:30:39,129 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2024-11-25 11:30:39,132 - sqlalchemy.engine.Engine - INFO - SELECT TOP 1 [Users].id AS [Users_id], [Users].username AS [Users_username], [Users].password AS [Users_password], [Users].email AS [Users_email], [Users].full_name AS [Users_full_name], [Users].role AS [Users_role], [Users].created_at AS [Users_created_at], [Users].last_login AS [Users_last_login], [Users].is_active AS [Users_is_active], [Users].login_attempts AS [Users_login_attempts] 
+FROM [Users] 
+WHERE [Users].username = ?
+2024-11-25 11:30:39,134 - sqlalchemy.engine.Engine - INFO - [generated in 0.00401s] ('admin',)
+2024-11-25 11:30:39,189 - __main__ - ERROR - Database initialization error: (pyodbc.ProgrammingError) ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'email'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'full_name'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'last_login'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'is_active'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'login_attempts'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+[SQL: SELECT TOP 1 [Users].id AS [Users_id], [Users].username AS [Users_username], [Users].password AS [Users_password], [Users].email AS [Users_email], [Users].full_name AS [Users_full_name], [Users].role AS [Users_role], [Users].created_at AS [Users_created_at], [Users].last_login AS [Users_last_login], [Users].is_active AS [Users_is_active], [Users].login_attempts AS [Users_login_attempts] 
+FROM [Users] 
+WHERE [Users].username = ?]
+[parameters: ('admin',)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2024-11-25 11:30:39,189 - sqlalchemy.engine.Engine - INFO - ROLLBACK

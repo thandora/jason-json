@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EVSU Login</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      /* Add fade-out animation */
+      .error-message {
+        transition: opacity 0.5s ease-out;
+      }
+      .error-message.fade-out {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="title-text">
+        <div class="title login">Login</div>
+        <div class="title signup">Signup</div>
+      </div>
+      <div class="form-container">
+        <div class="slide-controls">
+          <input type="radio" name="slide" id="login" checked />
+          <input type="radio" name="slide" id="signup" />
+          <label for="login" class="slide login">Login</label>
+          <label for="signup" class="slide signup">Signup</label>
+          <div class="slider-tab"></div>
+        </div>
+
+        <div class="form-inner">
+          <!-- Login Form -->
+          <form action="{{ url_for('login') }}" method="POST" class="login">
+            {% if error %}
+            <div id="errorMsg" class="error-message">{{ error }}</div>
+            {% endif %}
+
+            <div class="field">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <div class="pass-link">
+              <a href="#">Forgot password?</a>
+            </div>
+
+            <div class="field btn">
+              <div class="btn-layer"></div>
+              <input type="submit" value="Login" />
+            </div>
+
+            <div class="signup-link">
+              Continue as Guest?
+              <a href="{{ url_for('dashboard2') }}">Click here</a>
+            </div>
+          </form>
+
+          <!-- Signup Form -->
+          <form action="{{ url_for('signup') }}" method="POST" class="signup">
+            {% if error %}
+            <div id="errorMsg" class="error-message">{{ error }}</div>
+            {% endif %}
+
+            <div class="field">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                required
+              />
+            </div>
+
+            <div class="field btn">
+              <div class="btn-layer"></div>
+              <input type="submit" value="Signup" />
+            </div>
+
+            <div class="signup-link">
+              Already have an account? <a href="">Login</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const loginText = document.querySelector(".title-text .login");
+      const loginForm = document.querySelector("form.login");
+      const loginBtn = document.querySelector("label.login");
+      const signupBtn = document.querySelector("label.signup");
+      const signupLink = document.querySelector("form .signup-link a");
+      const signupText = document.querySelector(".title-text .signup");
+      const signupForm = document.querySelector("form.signup");
+
+      // Function to remove error messages with fade-out effect
+      function clearErrorMessages() {
+        const errorMsgs = document.querySelectorAll("#errorMsg");
+        errorMsgs.forEach((msg) => {
+          // Add fade-out class
+          msg.classList.add("fade-out");
+
+          // Remove the element after fade-out transition completes
+          setTimeout(() => {
+            msg.remove();
+          }, 500); // Match the transition time in CSS
+        });
+      }
+
+      // Auto-hide error message after 3 seconds if it exists
+      const errorMsg = document.getElementById("errorMsg");
+      if (errorMsg) {
+        setTimeout(() => {
+          errorMsg.classList.add("fade-out");
+          setTimeout(() => {
+            errorMsg.remove();
+          }, 500);
+        }, 3000);
+      }
+
+      signupBtn.onclick = () => {
+        loginForm.style.marginLeft = "-50%";
+        loginText.style.marginLeft = "-50%";
+        clearErrorMessages(); // Remove any existing error messages
+      };
+
+      loginBtn.onclick = () => {
+        loginForm.style.marginLeft = "0%";
+        loginText.style.marginLeft = "0%";
+        clearErrorMessages(); // Remove any existing error messages
+      };
+    </script>
+  </body>
+</html>

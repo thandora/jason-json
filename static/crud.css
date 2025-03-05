@@ -1,0 +1,878 @@
+/* Extension Program Management Styles */
+.extension-management-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.management-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Enhanced Programs Table Styles */
+.programs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+/* Advanced Table Header */
+.programs-table thead {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.programs-table thead th {
+  padding: 15px 12px;
+  font-size: 16px;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+.programs-table thead th:last-child {
+  text-align: center; /* Center alignment for the last column (Actions) */
+}
+
+/* Header Hover Effect */
+.programs-table thead th::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.5s ease;
+}
+
+.programs-table thead th:hover::before {
+  left: 100%;
+}
+
+/* Alternating Row Colors with Subtle Gradient */
+.programs-table tbody tr:nth-child(odd) {
+  background: linear-gradient(to right, #f9f9f9, #ffffff);
+}
+
+.programs-table tbody tr:nth-child(even) {
+  background: linear-gradient(to right, #f4f4f4, #ffffff);
+}
+
+/* Enhanced Row Hover Effect */
+.programs-table tbody tr {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.programs-table tbody tr:hover {
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
+  transform: scale(1.01);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+}
+
+/* Animated Hover Border */
+.programs-table tbody tr::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(to right, #4caf50, #81c784);
+  transition: width 0.3s ease;
+}
+
+.programs-table tbody tr:hover::after {
+  width: 100%;
+}
+
+/* Table Data Cells */
+.programs-table tbody td {
+  padding: 10px 12px; /* Increased padding */
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px; /* Increased from 12px */
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+/* Column Width Adjustments */
+.programs-table .title-column {
+  width: 20%;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.programs-table .location-column {
+  width: 15%;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.programs-table .status-column {
+  width: 10%;
+}
+
+/* Status Column Styling */
+.programs-table tbody td.status {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px; /* Slightly larger */
+  padding: 5px 8px;
+  border-radius: 15px;
+  white-space: nowrap; /* Ensure status fits in one row */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px; /* Limit width to force single-row display */
+}
+
+.programs-table tbody td.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.programs-table tbody td.status-in-progress {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.programs-table tbody td.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+.programs-table thead th:last-child, /* Status column header */
+.programs-table tbody td:last-child { /* Status column data */
+  width: 135px; /* Fixed width for status column */
+  min-width: 135px;
+  max-width: 135px;
+}
+
+.programs-table thead th:nth-child(6), /* Status column header */
+.programs-table tbody td:nth-child(6) { /* Status column data */
+  width: 110px; /* Fixed width for status column */
+  min-width: 110px;
+  max-width: 110px;
+}
+
+.programs-table thead th:nth-child(2), /* Status column header */
+.programs-table tbody td:nth-child(2) { /* Status column data */
+  width: 270px; /* Fixed width for status column */
+  min-width: 270px;
+  max-width: 270px;
+}
+.programs-table thead th:nth-child(3), /* Status column header */
+.programs-table tbody td:nth-child(3) { /* Status column data */
+  width: 200px; /* Fixed width for status column */
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* Status Column Styling */
+.programs-table tbody td.status {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.programs-table tbody td.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.programs-table tbody td.status-in-progress {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.programs-table tbody td.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+/* Action Buttons Styling */
+.programs-table .action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 10%;
+}
+
+.programs-table .action-buttons .edit-btn,
+.programs-table .action-buttons .delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Slightly larger */
+  height: 30px; /* Slightly larger */
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+  padding: 0;
+  font-size: 12px; /* Added font size */
+}
+
+.programs-table .action-buttons .edit-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.programs-table .action-buttons .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.programs-table .action-buttons .edit-btn:hover,
+.programs-table .action-buttons .delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .programs-table {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .programs-table thead {
+    display: none; /* Hide the header on mobile */
+  }
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidder;
+}
+
+:root {
+  --primary-color: #800000; /* Maroon */
+  --primary-light: #a52a2a; /* Lighter maroon for hover */
+  --primary-dark: #4d0000; /* Darker maroon */
+  --text-color: #ffffff;
+  --transition-speed: 0.3s;
+}
+
+/* Enhanced Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 20px;
+  position: relative;
+  transition: all var(--transition-speed);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  font-size: 24px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.sidebar-menu {
+  list-style: none;
+}
+
+.sidebar-menu li {
+  padding: 15px 20px;
+  margin: 8px 0;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-menu li:hover {
+  background-color: var(--primary-light);
+  transform: translateX(10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-menu li.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+}
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+
+    position: relative;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f6fa;
+}
+
+.header {
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.logo {
+  width: 190px;
+  height: auto;
+  margin: 10px auto -20px;
+  border-radius: 5px;
+  display: block;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 20px; /* Optional: adds some bottom padding */
+}
+.dashboard-grid {
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.dashboard-grid::-webkit-scrollbar {
+  display: none; /* WebKit browsers (Chrome, Safari) */
+}
+
+.logout-container {
+  margin-top: 270px; /* Pushes the button to the bottom of the sidebar */
+  padding: 20px; /* Adds some padding */
+}
+
+.logout-button {
+  width: 100%; /* Makes the button full-width */
+  padding: 10px; /* Adds padding for better touch area */
+  background-color: var(--primary-light); /* Use the lighter maroon color */
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+.logout-button:hover {
+  background-color: var(--primary-dark); /* Darker color on hover */
+}
+.sidebar-menu li i {
+  font-size: 20px;
+  color: #666;
+}
+
+.button {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Icon Styles */
+.icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.icon-dashboard {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 3v6h5.12c.22-.64.38-1.31.38-2 0-3.31-2.69-6-6-6-3.12 0-5.66 2.38-5.95 5.4l2.05 2.06V3h4.95zm-2 18c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z'/%3E%3C/svg%3E");
+}
+
+.icon-extension-management {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z'/%3E%3C/svg%3E");
+}
+
+.icon-extension-programs {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z'/%3E%3C/svg%3E");
+}
+
+.icon-location-map {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E");
+}
+.sidebar-menu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #f9f9f9;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Scrollbar styling for the modal content */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  transition: color 0.3s ease;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+  color: #333;
+  text-decoration: none;
+}
+
+#program-modal h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+#program-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+#program-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+#program-form label {
+  margin-bottom: 5px;
+  color: #34495e;
+  font-weight: 600;
+}
+
+#program-form input,
+#program-form select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+#program-form input:focus,
+#program-form select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+#save-program-btn {
+  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  width: 100%;
+}
+
+#save-program-btn:hover {
+  background-color: #2980b9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+  }
+}
+.styled-checkbox-list {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(200px, 1fr)
+  ); /* Responsive grid layout */
+  gap: 10px; /* Space between items */
+  margin-top: 10px;
+}
+
+/* Individual checkbox item */
+.styled-checkbox-list label {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.styled-checkbox-list label:hover {
+  background-color: #f0f8ff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide default checkbox appearance */
+.styled-checkbox-list input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-right: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Checkbox appearance when selected */
+.styled-checkbox-list input[type="checkbox"]:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M13.854 3.146a.5.5 0 0 0-.708 0L6.5 9.793 4.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0 0-.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Checkbox transition effect */
+.styled-checkbox-list input[type="checkbox"]:focus {
+  outline: 2px solid #4caf50;
+}
+
+/* Text for each SDG */
+.styled-checkbox-list span {
+  font-size: 14px;
+  color: #333;
+}
+/* General Button Styling */
+button {
+  font-family: "Arial", sans-serif;
+  font-size: 14px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+/* Add New Program Button */
+#add-new-program {
+  background: linear-gradient(to right, #4caf50, #81c784);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#add-new-program:hover {
+  background: linear-gradient(to right, #388e3c, #66bb6a);
+  transform: scale(1.05);
+}
+
+/* General Styling for Edit and Delete Buttons */
+/* Container for Actions (Edit and Delete) */
+.actions-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 10px; /* Add space between buttons */
+  align-items: flex-start; /* Align buttons to the left */
+}
+
+/* Edit Button Styling */
+.edit-btn {
+  width: 100px;
+  text-align: center;
+  background: linear-gradient(to right, #2196f3, #64b5f6);
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 3px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Edit Button Hover */
+.edit-btn:hover {
+  background: linear-gradient(to right, #1976d2, #42a5f5);
+  transform: translateY(-2px);
+}
+
+/* Delete Button Styling */
+.delete-btn {
+  width: 100px;
+  text-align: center;
+  background: linear-gradient(to right, #f44336, #e57373);
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 3px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Delete Button Hover */
+.delete-btn:hover {
+  background: linear-gradient(to right, #d32f2f, #ef5350);
+  transform: translateY(-2px);
+}
+
+/* Select Location Button */
+#open-map-modal {
+  background: linear-gradient(to right, #ff9800, #ffc107);
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#open-map-modal:hover {
+  background: linear-gradient(to right, #f57c00, #ffb300);
+  transform: translateY(-2px);
+}
+/* Modal Background */
+.modal-1 {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.4); /* Black with transparency */
+}
+
+/* Modal Content */
+.modal-content-1 {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px; /* Set the modal width */
+  text-align: center;
+}
+
+/* Close Button */
+.close-1 {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-1:hover,
+.close-1:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.confirm-btn-1 {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
+
+.cancel-btn-1 {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+.search-container {
+  margin-bottom: 20px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}

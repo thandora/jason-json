@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <title>Extension Program Management</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='crud.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar (same as dashboard.html) -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="EVSU Logo"
+            class="logo"
+          />
+        </div>
+        <ul class="sidebar-menu">
+          <li
+            
+            onclick="window.location.href='{{ url_for('dashboard') }}'"
+          >
+            <i class="icon icon-dashboard"></i> Dashboard
+          </li>
+          <li class="active"
+            onclick="window.location.href='{{ url_for('extension_program_management') }}'"
+          >
+            <i class="icon icon-extension-management"></i> Extension Program
+            Management
+          </li>
+          <li onclick="window.location.href='{{ url_for('main_campus') }}'">
+            <i class="icon icon-extension-programs"></i> Extension Programs
+          </li>
+          <li onclick="window.location.href='{{ url_for('map') }}'">
+            <i class="icon icon-location-map"></i> Location Map
+          </li>
+        </ul>
+        <div class="logout-container">
+            <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header>
+            <h1>Extension Program Management</h1>
+        </header>
+
+        <div class="extension-management-container">
+            <div class="management-actions">
+                <button id="view-programs"> </button>
+                <button id="add-new-program">Add New Program</button>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Enter Keyword">
+              </div>
+            <table class="programs-table">
+              <thead>
+                  <tr>
+ 
+                      <th>Title</th>
+                      <th>Location</th>
+                      <th>Leader</th>
+                      <th>Project Date</th>
+                      <th>Duration</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for program in programs %}
+                  <tr>
+  
+                      <td data-label="Title">{{ program.title }}</td>
+                      <td data-label="Location">{{ program.projectlocation }}</td>
+                      <td data-label="Leader">{{ program.leader }}</td>
+                      <td data-label="Members">{{ program.projectdate }}</td>
+                      <td>{{ program.duration }}</td>
+                      <td>{{ program.projectstatus }}</td>
+                      <td>
+                          <button class="edit-btn" data-projectid="{{ program.projectid }}">Edit</button>
+                          <button class="delete-btn" data-projectid="{{ program.projectid }}">Delete</button>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
+    </main>
+      </div>``
+    </div>
+
+    <!-- Modals for Add/Edit Program -->
+    <div id="program-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title">Add/Edit Program</h2>
+        <form id="program-form">
+            <!-- Program Information -->
+            <label for="title">Program Title</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="projectlocation">Project Location</label>
+            <input type="text" id="projectlocation" name="projectlocation">
+
+            <label for="leader">Project Leader</label>
+            <input type="text" id="leader" name="leader">
+
+            <label for="assistant">Project Assistant</label>
+            <input type="text" id="assistant" name="assistant">
+
+            <label for="members">Project Members</label>
+            <input type="text" id="members" name="members">
+
+            <label for="projectdate">Project Date</label>
+            <input type="date" id="projectdate" name="projectdate">
+
+            <label for="duration">Project Duration</label>
+            <input type="text" id="duration" name="duration">
+
+            <label for="projectstatus">Project Status</label>
+            <select id="projectstatus" name="projectstatus">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <label for="link">Project Link</label>
+            <input type="url" id="link" name="link">
+
+            <!-- Location Coordinates -->
+            <label for="x">Longitude</label>
+            <input type="text" id="x" name="x" readonly>
+
+            <label for="y">Latitude</label>
+            <input type="text" id="y" name="y" readonly>
+            <button type="button" id="open-map-modal">Select Location</button>
+
+            <!-- Map Modal -->
+            <div id="map-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Select Location</h2>
+                    <div id="map" style="width: 100%; height: 400px;"></div>
+                    <button type="button" id="save-coordinates">Save Coordinates</button>
+                </div>
+            </div>
+
+            <!-- SDG Goals -->
+            <label>SDG Goals</label>
+            <div id="sdg-options" class="styled-checkbox-list">
+                <label><input type="checkbox" name="sdg" value="1"> No Poverty</label>
+                <label><input type="checkbox" name="sdg" value="2"> Zero Hunger</label>
+                <label><input type="checkbox" name="sdg" value="3"> Good Health and Well-being</label>
+                <label><input type="checkbox" name="sdg" value="4"> Quality Education</label>
+                <label><input type="checkbox" name="sdg" value="5"> Gender Equality</label>
+                <label><input type="checkbox" name="sdg" value="6"> Clean Water and Sanitation</label>
+                <label><input type="checkbox" name="sdg" value="7"> Affordable and Clean Energy</label>
+                <label><input type="checkbox" name="sdg" value="8"> Decent Work and Economic Growth</label>
+                <label><input type="checkbox" name="sdg" value="9"> Industry, Innovation, and Infrastructure</label>
+                <label><input type="checkbox" name="sdg" value="10"> Reduced Inequality</label>
+                <label><input type="checkbox" name="sdg" value="11"> Sustainable Cities and Communities</label>
+                <label><input type="checkbox" name="sdg" value="12"> Responsible Consumption and Production</label>
+                <label><input type="checkbox" name="sdg" value="13"> Climate Action</label>
+                <label><input type="checkbox" name="sdg" value="14"> Life Below Water</label>
+                <label><input type="checkbox" name="sdg" value="15"> Life on Land</label>
+                <label><input type="checkbox" name="sdg" value="16"> Peace and Justice Strong Institutions</label>
+                <label><input type="checkbox" name="sdg" value="17"> Partnerships to Achieve the Goal</label>
+            </div>
+
+            <!-- College Campus -->
+            <label for="collegecampus">College Campus</label>
+            <input type="text" id="collegecampus" name="collegecampus">
+
+            <!-- Submit Button -->
+            <button type="submit" id="save-program-btn">Save Program</button>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal-1" class="modal-1">
+    <div class="modal-content-1">
+        <span class="close-1">&times;</span>
+        <h2>Are you sure you want to delete this program?</h2>
+        <button id="confirm-delete-1" class="confirm-btn-1">Yes, Delete</button>
+        <button id="cancel-delete-1" class="cancel-btn-1">Cancel</button>
+    </div>
+</div>
+<div id="success-modal-1" class="modal-1">
+    <div class="modal-content-1">
+        <span class="close-1">&times;</span>
+        <h2>Program deleted successfully!</h2>
+        <button id="close-success-modal-1" class="close-success-btn-1">OK</button>
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // *** MODAL & FORM ELEMENTS ***
+        const modal = document.getElementById('program-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalForm = document.getElementById('program-form');
+        const closeModalBtn = modal.querySelector('.close');
+        const saveButton = document.getElementById('save-program-btn');
+        const sdgCheckboxes = document.querySelectorAll('#sdg-options input[name="sdg"]');
+        const addProgramBtn = document.querySelector('.management-actions button:nth-child(2)');
+        
+        const programsTable = document.querySelector('.programs-table');
+        let currentOperation = 'add';
+        let currentProjectId = null;
+        const successModal1 = document.getElementById("success-modal-1");
+        const closeSuccessModalBtn1 = document.getElementById("close-success-modal-1");
+        const modal1 = document.getElementById("delete-modal-1");
+        const closeModal1 = document.querySelector(".close-1");
+        const confirmDeleteBtn1 = document.getElementById("confirm-delete-1");
+        const cancelDeleteBtn1 = document.getElementById("cancel-delete-1");
+
+function showSuccessModal1() {
+    successModal1.style.display = "block"; // Show the success modal
+}
+
+
+function hideSuccessModal1() {
+    successModal1.style.display = "none"; // Hide the success modal
+}
+
+closeSuccessModalBtn1.addEventListener("click", hideSuccessModal1);
+
+function showDeleteModal1(projectId) {
+    currentProjectId = projectId; // Store the project ID
+    modal1.style.display = "block"; // Show the modal
+}
+
+function hideDeleteModal1() {
+    modal1.style.display = "none"; // Hide the modal
+}
+
+
+closeModal1.addEventListener("click", hideDeleteModal1);
+cancelDeleteBtn1.addEventListener("click", hideDeleteModal1);
+
+// Confirm delete button logic
+confirmDeleteBtn1.addEventListener("click", function () {
+    deleteProgram(currentProjectId); // Call delete function with the selected project ID
+    hideDeleteModal1(); // Close the modal after deletion
+});
+
+// Function to handle program deletion
+function deleteProgram(projectId) {
+    fetch(`/delete-program/${projectId}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                location.reload(); // Refresh the page to reflect changes
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error deleting program:', error));
+}
+
+// Attach event listener to delete buttons
+function attachDeleteListeners() {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const projectId = this.getAttribute('data-projectid');
+            showDeleteModal1(projectId); // Show modal when delete button is clicked
+        });
+    });
+}
+
+// Ensure listeners are attached after DOM content is loaded
+document.addEventListener('DOMContentLoaded', function () {
+    attachDeleteListeners();
+});
+    
+        // *** FORM RESET ***
+        function resetForm() {
+            document.getElementById('program-form').reset();
+            sdgCheckboxes.forEach(checkbox => (checkbox.checked = false));
+        }
+    
+    
+        // *** GET SELECTED SDGS ***
+        function getSelectedSDGs() {
+            return Array.from(document.querySelectorAll('#sdg-options input[name="sdg"]:checked'))
+                .map(checkbox => checkbox.value); // Always returns an array of selected values
+        }
+        
+    
+        // *** OPEN MODAL ***
+        addProgramBtn.addEventListener('click', function () {
+            resetForm();
+            currentOperation = 'add';
+            modalTitle.textContent = 'Add New Program';
+            saveButton.textContent = 'Save Program';
+            modal.style.display = 'block';
+        });
+    
+        // *** CLOSE MODAL ***
+        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', event => {
+            if (event.target === modal) modal.style.display = 'none';
+        });
+    
+        // *** LOAD PROGRAM DETAILS ***
+        function loadProgramDetails(projectid) {
+            currentOperation = 'edit';  // Set the operation to edit
+            currentProjectId = projectid;  // Store the current project ID
+            
+            fetch(`/get-program/${projectid}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched program data:", data);
+        
+                    // Reset SDG checkboxes
+                    sdgCheckboxes.forEach(checkbox => (checkbox.checked = false));
+        
+                    // Parse SDG field into an array
+                    const selectedSDGs = data.sdg ? data.sdg.split(',').map(sdg => sdg.trim()) : [];
+                    console.log("Selected SDGs to check:", selectedSDGs);
+        
+                    // Check the SDGs
+                    selectedSDGs.forEach(sdg => {
+                        const checkbox = document.querySelector(`#sdg-options input[value="${sdg}"]`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
+                    });
+        
+                    // Populate other form fields
+                    Object.entries(data).forEach(([key, value]) => {
+                        const field = document.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            if (field.type === "date" && value) {
+                                field.value = new Date(value).toISOString().split("T")[0];
+                            } else if (field.tagName === "SELECT") {
+                                Array.from(field.options).forEach(option => {
+                                    option.selected = option.value === value;
+                                });
+                            } else {
+                                field.value = value || "";
+                            }
+                        }
+                    });
+        
+                    modalTitle.textContent = 'Edit Program';
+                    saveButton.textContent = 'Update Program';
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error loading program details:', error));
+        }
+        
+        
+    
+        function attachEditListeners() {
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const projectId = this.getAttribute('data-projectid');
+                    loadProgramDetails(projectId);
+                });
+            });
+        }
+
+        // Save program (handle both add and edit)
+        function saveProgram(event) {
+            event.preventDefault();
+            const formData = new FormData(modalForm);
+        
+            // Handle SDG values
+            formData.delete('sdg');
+            getSelectedSDGs().forEach(value => formData.append('sdg[]', value));
+        
+            const url = currentOperation === 'add' ? '/add-program' : `/edit-program/${currentProjectId}`;
+            const method = currentOperation === 'add' ? 'POST' : 'PUT';
+        
+            // For PUT requests, we need to handle it differently due to browser limitations
+            if (method === 'PUT') {
+                // Convert FormData to URLSearchParams for PUT request
+                const searchParams = new URLSearchParams();
+                for (const pair of formData.entries()) {
+                    searchParams.append(pair[0], pair[1]);
+                }
+        
+                fetch(url, {
+                    method: method,
+                    body: searchParams,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        modal.style.display = 'none';
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the program');
+                });
+            } else {
+                // Regular POST request for new programs
+                fetch(url, {
+                    method: method,
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        modal.style.display = 'none';
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the program');
+                });
+            }
+        }
+        
+        
+        function refreshProgramsTable() {
+            fetch('/get-programs')
+                .then(response => response.json())
+                .then(programs => {
+                    const tableBody = document.querySelector('.programs-table tbody');
+                    tableBody.innerHTML = '';
+                    programs.forEach(program => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${program.projectid}</td>
+                            <td>${program.title}</td>
+                            <td>${program.projectlocation}</td>
+                            <td>${program.leader}</td>
+                            <td>${program.projectdate}</td>
+                            <td>${program.duration}</td>
+                            <td>${program.projectstatus}</td>
+                            <td>
+                                <button class="edit-btn" data-projectid="${program.projectid}">Edit</button>
+                                <button class="delete-btn" data-projectid="${program.projectid}">Delete</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+        
+                    // Reattach listeners to new content
+                    attachEditListeners();
+                    attachDeleteListeners();
+                })
+                .catch(error => console.error('Error refreshing programs table:', error));
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            attachEditListeners();
+            attachDeleteListeners();
+        });
+        
+        // Attach delete listeners when the DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            attachDeleteListeners();
+        });
+        // *** SAVE PROGRAM (ADD/EDIT) FORM SUBMISSION ***
+         // Submit form
+         saveButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            const formData = new FormData(modalForm);
+        
+            const selectedSDGs = getSelectedSDGs(); // Ensure this returns an array
+            if (Array.isArray(selectedSDGs)) {
+                selectedSDGs.forEach(value => formData.append('sdg[]', value));
+            } else {
+                console.error("getSelectedSDGs() did not return an array.");
+            }
+        
+            const url = currentOperation === 'add' ? '/add-program' : `/edit-program/${currentProjectId}`;
+            const method = currentOperation === 'add' ? 'POST' : 'PUT';
+        
+            fetch(url, {
+                method: method,
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    modal.style.display = 'none';
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            });
+        });
+        
+        
+        
+    
+        // *** MAP HANDLING ***
+        const mapModal = document.getElementById('map-modal');
+        const openMapBtn = document.getElementById('open-map-modal');
+        const saveCoordinatesBtn = document.getElementById('save-coordinates');
+        let map, marker;
+    
+        openMapBtn.addEventListener('click', function () {
+            mapModal.style.display = 'block';
+            const currentLng = parseFloat(document.getElementById('x').value) || 125.0036;
+            const currentLat = parseFloat(document.getElementById('y').value) || 11.2433;
+    
+            if (!map) {
+                map = L.map('map').setView([currentLat, currentLng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                marker = L.marker([currentLat, currentLng], { draggable: true }).addTo(map);
+                marker.on('dragend', e => {
+                    const latlng = e.target.getLatLng();
+                    document.getElementById('x').value = latlng.lng;
+                    document.getElementById('y').value = latlng.lat;
+                });
+            } else {
+                map.setView([currentLat, currentLng], 13);
+                marker.setLatLng([currentLat, currentLng]);
+            }
+        });
+    
+        saveCoordinatesBtn.addEventListener('click', () => mapModal.style.display = 'none');
+        mapModal.querySelector('.close').addEventListener('click', () => mapModal.style.display = 'none');
+        window.addEventListener('click', event => {
+            if (event.target === mapModal) mapModal.style.display = 'none';
+        });
+    
+        // *** INITIAL ATTACHMENT OF LISTENERS ***
+        attachEditListeners();
+        attachDeleteListeners();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const programRows = document.querySelectorAll('.programs-table tbody tr');
+      
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase().trim();
+      
+          programRows.forEach(row => {
+            // Get the text content of relevant columns
+            const title = row.querySelector('td[data-label="Title"]').textContent.toLowerCase();
+            const location = row.querySelector('td[data-label="Location"]').textContent.toLowerCase();
+            const leader = row.querySelector('td[data-label="Leader"]').textContent.toLowerCase();
+            const members = row.querySelector('td[data-label="Members"]').textContent.toLowerCase();
+      
+            // Check if search term is in any of these fields
+            const isVisible = 
+              title.includes(searchTerm) || 
+              location.includes(searchTerm) || 
+              leader.includes(searchTerm) || 
+              members.includes(searchTerm);
+      
+            // Toggle row visibility
+            row.style.display = isVisible ? '' : 'none';
+          });
+        });
+      });
+    </script>
+    
+  </body>
+</html>

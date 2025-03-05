@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Project Locations Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+
+      #map {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background-color: #f5f5f5;
+        overflow: hidden;
+      }
+
+      #info-box {
+        display: none;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 400px;
+        max-height: 80vh;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 2px solid #800000;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 15px;
+      }
+
+      #info-box.active {
+        display: block;
+      }
+
+      .project-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #800000;
+        margin-bottom: 15px;
+        padding-right: 25px;
+      }
+
+      .close-button {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #800000;
+        padding: 0 5px;
+      }
+
+      .close-button:hover {
+        color: #550000;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 0.9rem;
+        table-layout: fixed; /* Prevents overflow */
+        word-wrap: break-word; /* Enables wrapping for long content */
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+
+      th {
+        background-color: #800000;
+        color: white;
+      }
+
+      td {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover td {
+        background-color: #ffe6e6; /* Light maroon tint on hover */
+      }
+
+      /* Scrollbar styling for the info box */
+      #info-box::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      #info-box::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      #info-box::-webkit-scrollbar-thumb {
+        background: #800000;
+        border-radius: 4px;
+      }
+
+      #info-box::-webkit-scrollbar-thumb:hover {
+        background: #550000;
+      }
+
+      .custom-popup {
+        max-width: 200px;
+        text-align: center;
+      }
+      /* Position the "Go Back to Dashboard" button */
+      .go-back-button {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background-color: #800000;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      .go-back-button:hover {
+        background-color: #550000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map">
+      <div id="info-box">
+        <button class="close-button" onclick="closeInfoBox()">×</button>
+        <div class="project-title" id="project-title"></div>
+        <table id="project-details"></table>
+      </div>
+      <button class="go-back-button" onclick="goBackToDashboard()">
+        Go Back to Dashboard
+      </button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+      // Initialize the map
+      var map = L.map("map").setView([11.2543, 125.0039], 10);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Mapping of SDG numbers to SDG names
+      const sdgMapping = {
+        1: "No Poverty",
+        2: "Zero Hunger",
+        3: "Good Health and Well-being",
+        4: "Quality Education",
+        5: "Gender Equality",
+        6: "Clean Water and Sanitation",
+        7: "Affordable and Clean Energy",
+        8: "Decent Work and Economic Growth",
+        9: "Industry, Innovation, and Infrastructure",
+        10: "Reduced Inequality",
+        11: "Sustainable Cities and Communities",
+        12: "Responsible Consumption and Production",
+        13: "Climate Action",
+        14: "Life Below Water",
+        15: "Life on Land",
+        16: "Peace and Justice Strong Institutions",
+        17: "Partnerships to Achieve the Goal",
+      };
+
+      function displayProjectInfo(project) {
+        const infoBox = document.getElementById("info-box");
+        const projectTitle = document.getElementById("project-title");
+        const projectDetails = document.getElementById("project-details");
+
+        // Set project title
+        projectTitle.textContent = project.title;
+
+        // Clear previous details
+        projectDetails.innerHTML = "";
+
+        // Define the fields to display and their labels
+        const fields = {
+          "Project ID": "id",
+          Location: "location",
+          Leader: "leader",
+          Assistant: "assistant",
+          Members: "members",
+          "Project Date": "projectdate",
+          Duration: "duration",
+          Status: "status",
+          SDG: (project) => {
+            // Check if project.sdg is a string that might contain multiple SDGs
+            if (typeof project.sdg === "string" && project.sdg.includes(",")) {
+              // Split the SDGs and map them to their names
+              return project.sdg
+                .split(",")
+                .map((sdgNum) => sdgMapping[sdgNum.trim()] || "N/A")
+                .join(", ");
+            }
+            // If it's a single SDG or undefined, use the existing logic
+            return sdgMapping[project.sdg] || "N/A";
+          },
+          College: "colcamp",
+          Campus: "collegecampus",
+          Coordinates: (project) => `(${project.lat}, ${project.lng})`,
+        };
+
+        // Add table rows for each field
+        for (const [label, field] of Object.entries(fields)) {
+          const value =
+            typeof field === "function" ? field(project) : project[field];
+          if (value) {
+            const row = `
+              <tr>
+                <th>${label}</th>
+                <td>${value}</td>
+              </tr>`;
+            projectDetails.innerHTML += row;
+          }
+        }
+
+        // Show the info box
+        infoBox.classList.add("active");
+      }
+
+      function closeInfoBox() {
+        const infoBox = document.getElementById("info-box");
+        infoBox.classList.remove("active");
+      }
+
+      // Close info box when clicking outside of it on the map
+      map.on("click", function (e) {
+        if (
+          !document.getElementById("info-box").contains(e.originalEvent.target)
+        ) {
+          closeInfoBox();
+        }
+      });
+
+      // Fetch project locations from the Flask backend
+      fetch("/api/projects")
+        .then((response) => response.json())
+        .then((projects) => {
+          projects.forEach((project) => {
+            const popupContent = `
+              <div class="custom-popup">
+                <strong>${project.title}</strong>
+                <br>
+                <em>Click for more details</em>
+              </div>`;
+
+            L.marker([project.lat, project.lng])
+              .bindPopup(popupContent)
+              .on("click", () => displayProjectInfo(project))
+              .addTo(map);
+          });
+
+          // Fit the map to show all markers
+          if (projects.length > 0) {
+            const markers = projects.map((p) => [p.lat, p.lng]);
+            map.fitBounds(markers);
+          }
+        })
+        .catch((error) =>
+          console.error("Error loading project locations:", error)
+        );
+
+      // Prevent scroll events from propagating
+      document.getElementById("info-box").addEventListener("wheel", (event) => {
+        event.stopPropagation();
+      });
+      function goBackToDashboard() {
+        window.location.href = "/dashboard2"; // Redirects to the dashboard page
+      }
+      fetch("/api/projects")
+        .then((response) => response.json())
+        .then((projects) => {
+          projects.forEach((project) => {
+            const popupContent = `
+        <div class="custom-popup">
+          <strong>${project.title}</strong>
+          <br>
+          <em>Click for more details</em>
+        </div>`;
+
+            const marker = L.marker([project.lat, project.lng])
+              .bindPopup(popupContent)
+              .on("click", () => displayProjectInfo(project))
+              .addTo(map);
+
+            // Display the popup when hovering over the marker
+            marker.on("mouseover", function () {
+              this.openPopup();
+            });
+
+            // Optionally close the popup when the mouse leaves the marker
+            marker.on("mouseout", function () {
+              this.closePopup();
+            });
+          });
+
+          // Fit the map to show all markers
+          if (projects.length > 0) {
+            const markers = projects.map((p) => [p.lat, p.lng]);
+            map.fitBounds(markers);
+          }
+        })
+        .catch((error) =>
+          console.error("Error loading project locations:", error)
+        );
+    </script>
+  </body>
+</html>
