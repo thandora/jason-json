@@ -121,7 +121,7 @@ def dashboard():
                 collegecampus = row[2]
                 projectdate = row[3]
 
-                print(f"Project Details:")
+                print("Project Details:")
                 print(f"  SDGs: {sdgs}")
                 print(f"  Status: {projectstatus}")
                 print(f"  Campus: {collegecampus}")
