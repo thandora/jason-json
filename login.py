@@ -13,22 +13,47 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import pyodbc
 from datetime import datetime
 from collections import defaultdict
+import os
 
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    r"mssql+pyodbc:///?odbc_connect=DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost\SQLEXPRESS;DATABASE=evsuDB;Trusted_Connection=yes"
-)
+# Database configuration from environment variables
+DB_DRIVER = os.environ.get("DB_DRIVER", "{ODBC Driver 17 for SQL Server}")
+DB_SERVER = os.environ.get("DB_SERVER", "localhost\\SQLEXPRESS")
+DB_NAME = os.environ.get("DB_NAME", "evsuDB")
+DB_USER = os.environ.get("DB_USER", "")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+DB_CONN_STRING = os.environ.get("DB_CONN_STRING", "")
+
+# Configure SQLAlchemy with connection string from environment variables
+if DB_CONN_STRING:
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"mssql+pyodbc:///?odbc_connect={DB_CONN_STRING}"
+    )
+else:
+    if DB_USER and DB_PASSWORD:
+        conn_str = f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};UID={DB_USER};PWD={DB_PASSWORD}"
+    else:
+        conn_str = f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};Trusted_Connection=yes"
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"mssql+pyodbc:///?odbc_connect={conn_str}"
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "your_secret_key"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your_secret_key")
 
 db = SQLAlchemy(app)
 
 
 def get_db_connection():
-    connection_string = r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=.\SQLEXPRESS;DATABASE=evsuDB;Trusted_Connection=yes;"
-    return pyodbc.connect(connection_string)
+    if DB_CONN_STRING:
+        return pyodbc.connect(DB_CONN_STRING)
+    elif DB_USER and DB_PASSWORD:
+        conn_str = f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};UID={DB_USER};PWD={DB_PASSWORD}"
+    else:
+        conn_str = f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};Trusted_Connection=yes"
+
+    return pyodbc.connect(conn_str)
 
 
 class User(db.Model):
@@ -37,13 +62,17 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
 
 
-DB_CONFIG = {
-    "driver": "{ODBC Driver 17 for SQL Server}",
-    "server": r".\SQLEXPRESS",
-    "database": "evsuDB",
-    "trusted_connection": "yes",
-}
+# Updated DB_CONFIG dictionary
+DB_CONFIG = {"driver": DB_DRIVER, "server": DB_SERVER, "database": DB_NAME}
 
+# Add username/password if not using trusted connection
+if DB_USER and DB_PASSWORD:
+    DB_CONFIG["uid"] = DB_USER
+    DB_CONFIG["pwd"] = DB_PASSWORD
+else:
+    DB_CONFIG["trusted_connection"] = "yes"
+
+# Create database tables if they don't exist
 with app.app_context():
     db.create_all()
 
@@ -414,41 +443,45 @@ def extension_program_management():
 
 
 def get_project_locations():
-    conn = pyodbc.connect(**DB_CONFIG)
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    query = """
-    SELECT *
-    FROM dbo.Projects
-    WHERE x IS NOT NULL AND y IS NOT NULL
-    """
+        query = """
+        SELECT *
+        FROM dbo.Projects
+        WHERE x IS NOT NULL AND y IS NOT NULL
+        """
 
-    cursor.execute(query)
-    columns = [column[0] for column in cursor.description]
-    projects = []
+        cursor.execute(query)
+        columns = [column[0] for column in cursor.description]
+        projects = []
 
-    for row in cursor:
-        project = dict(zip(columns, row))
+        for row in cursor:
+            project = dict(zip(columns, row))
 
-        for key, value in project.items():
-            if isinstance(value, datetime):
-                project[key] = value.strftime("%Y-%m-%d")
-            elif isinstance(value, (float, int)):
-                project[key] = str(value)
-            elif value is None:
-                project[key] = ""
+            for key, value in project.items():
+                if isinstance(value, datetime):
+                    project[key] = value.strftime("%Y-%m-%d")
+                elif isinstance(value, (float, int)):
+                    project[key] = str(value)
+                elif value is None:
+                    project[key] = ""
 
-        project["lng"] = project.pop("x")
-        project["lat"] = project.pop("y")
+            project["lng"] = project.pop("x")
+            project["lat"] = project.pop("y")
 
-        if project.get("link"):
-            project["link"] = f"/static/pdfs/{project['link']}"
+            if project.get("link"):
+                project["link"] = f"/static/pdfs/{project['link']}"
 
-        projects.append(project)
+            projects.append(project)
 
-    cursor.close()
-    conn.close()
-    return projects
+        cursor.close()
+        conn.close()
+        return projects
+    except Exception as e:
+        print(f"Error in get_project_locations: {str(e)}")
+        return []
 
 
 # 2
@@ -599,7 +632,6 @@ def project_details(projectid):
 
 
 # 5
-# Replace the existing edit_program route in login.py with this:
 @app.route("/edit-program/<int:projectid>", methods=["PUT"])
 def edit_program(projectid):
     try:
@@ -678,5 +710,13 @@ def delete_program(projectid):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+# Add a health check endpoint for Render
+@app.route("/health")
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Use the PORT environment variable provided by Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
