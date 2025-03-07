@@ -2,21 +2,18 @@ services:
   - type: web
     name: evsu-flask-app
     env: python
-    region: ohio
-    plan: free
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: bash ./build.sh
     startCommand: gunicorn login:app
     envVars:
       - key: DB_DRIVER
-        value: "{ODBC Driver 17 for SQL Server}"
+        value: "Driver={ODBC Driver 18 for SQL Server};Server=tcp:evsu-server.database.windows.net,1433;Database=evsu db;Uid={your_user_name};Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryPassword"
       - key: DB_SERVER
         value: your-cloud-sql-server.database.windows.net
-      - key: DB_NAME
-        value: evsuDB
+      - key: evsu-server.database.windows.net
+        value: "evsu db"
       - key: DB_USER
         sync: false
       - key: DB_PASSWORD
         sync: false
       - key: FLASK_SECRET_KEY
         generateValue: true
-    healthCheckPath: /health
